@@ -1,3 +1,4 @@
+-- câu lệnh tạo trong sql server
 -- Tạo bảng Users
 CREATE TABLE Users (
     UserID INT AUTO_INCREMENT PRIMARY KEY, -- Mã người dùng, tự động tăng
