@@ -208,3 +208,85 @@ CREATE TABLE Statistics (
     TotalOrders INT DEFAULT 0, -- Tổng số đơn hàng trong ngày
     NewCustomers INT DEFAULT 0 -- Số lượng khách hàng mới trong ngày
 );
+
+
+-- Lệnh insert dữ liệu
+
+INSERT INTO Categories (CategoryName, Description) VALUES
+('Sofa', 'Các loại sofa đa dạng kiểu dáng và kích cỡ.'),
+('Bàn', 'Bàn làm việc, bàn ăn, bàn trang điểm.'),
+('Ghế', 'Ghế gỗ, ghế nhựa, ghế bọc nệm.'),
+('Tủ', 'Tủ quần áo, tủ bếp, tủ trang trí.'),
+('Giường', 'Giường ngủ đơn, giường đôi.'),
+('Đèn', 'Đèn trang trí, đèn bàn, đèn đứng.'),
+('Thảm', 'Thảm trải sàn, thảm trang trí.'),
+('Kệ', 'Kệ sách, kệ TV, kệ trang trí.'),
+('Rèm', 'Rèm cửa sổ, rèm trang trí.'),
+('Đồ decor', 'Các vật dụng trang trí nội thất.');
+
+
+
+INSERT INTO Products (ProductName, CategoryID, Price, Stock, Description, ImageURL) VALUES
+('Sofa chữ L', 1, 12000000.00, 10, 'Sofa chữ L hiện đại, chất liệu vải cao cấp.', 'https://example.com/sofa-l.jpg'),
+('Bàn làm việc gỗ sồi', 2, 3000000.00, 15, 'Bàn làm việc gỗ sồi, kiểu dáng thanh lịch.', 'https://example.com/ban-lam-viec.jpg'),
+('Ghế văn phòng lưới', 3, 1500000.00, 20, 'Ghế văn phòng lưới thoáng khí.', 'https://example.com/ghe-van-phong.jpg'),
+('Tủ quần áo 4 cánh', 4, 7000000.00, 5, 'Tủ quần áo 4 cánh, gỗ công nghiệp.', 'https://example.com/tu-quan-ao.jpg'),
+('Giường ngủ king size', 5, 15000000.00, 8, 'Giường ngủ king size với khung gỗ chắc chắn.', 'https://example.com/giuong-ngu.jpg'),
+('Đèn bàn LED cảm ứng', 6, 500000.00, 50, 'Đèn bàn LED cảm ứng tiết kiệm điện.', 'https://example.com/den-ban-led.jpg'),
+('Thảm trải sàn họa tiết', 7, 2000000.00, 12, 'Thảm trải sàn họa tiết phong cách Bắc Âu.', 'https://example.com/tham-trai-san.jpg'),
+('Kệ sách 5 tầng', 8, 1800000.00, 7, 'Kệ sách 5 tầng với thiết kế gỗ tự nhiên.', 'https://example.com/ke-sach.jpg'),
+('Rèm cửa voan', 9, 1200000.00, 10, 'Rèm cửa voan nhẹ nhàng, tinh tế.', 'https://example.com/rem-cua.jpg'),
+('Chậu cây trang trí', 10, 300000.00, 30, 'Chậu cây xanh trang trí trong nhà.', 'https://example.com/chau-cay.jpg');
+
+
+
+INSERT INTO Users (Username, Password, Email, FullName, Phone, Address, Role) VALUES
+('admin', 'encryptedpassword123', 'admin@example.com', 'Admin User', '0900000000', '123 Main St, City', 'Admin'),
+('john_doe', 'encryptedpassword456', 'john@example.com', 'John Doe', '0911000001', '456 Oak Ave, Town', 'Customer'),
+('jane_doe', 'encryptedpassword789', 'jane@example.com', 'Jane Doe', '0922000002', '789 Pine Blvd, Village', 'Customer');
+
+
+
+INSERT INTO Orders (UserID, OrderDate, TotalAmount, Status) VALUES
+(2, '2025-01-01 10:00:00', 15000000.00, 'Completed'),
+(3, '2025-01-02 11:30:00', 7000000.00, 'Pending'),
+(2, '2025-01-03 14:45:00', 1800000.00, 'Cancelled');
+
+
+INSERT INTO OrderDetails (OrderID, ProductID, Quantity, Price) VALUES
+(1, 5, 1, 15000000.00),
+(2, 4, 1, 7000000.00),
+(3, 8, 1, 1800000.00);
+
+
+INSERT INTO Cart (UserID, ProductID, Quantity) VALUES
+(2, 1, 2),
+(3, 3, 1),
+(3, 7, 2);
+
+
+INSERT INTO Payments (OrderID, PaymentMethod, PaymentDate, PaymentStatus) VALUES
+(1, 'Credit Card', '2025-01-01 11:00:00', 'Paid'),
+(2, 'Bank Transfer', '2025-01-02 12:00:00', 'Unpaid'),
+(3, 'Cash', '2025-01-03 15:00:00', 'Cancelled');
+
+
+
+INSERT INTO Reviews (ProductID, UserID, Rating, Comment) VALUES
+(5, 2, 5, 'Giường rất đẹp và chắc chắn, tôi rất hài lòng!'),
+(4, 3, 4, 'Tủ đẹp nhưng giao hàng hơi trễ.'),
+(8, 2, 3, 'Kệ sách ổn nhưng giá hơi cao.');
+
+
+
+INSERT INTO ForgotPasswordTokens (UserID, Token, Expiration) VALUES
+(2, 'abc123xyz', '2025-01-15 23:59:59'),
+(3, 'token567890', '2025-01-16 23:59:59');
+
+
+
+INSERT INTO Statistics (Date, TotalSales, TotalOrders, NewCustomers) VALUES
+('2025-01-01', 15000000.00, 1, 2),
+('2025-01-02', 7000000.00, 1, 1),
+('2025-01-03', 1800000.00, 1, 0);
+
