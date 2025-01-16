@@ -2,6 +2,7 @@ import Link from "next/link"
 import { Search } from 'lucide-react'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { AuthDialog } from "@/components/auth-dialog"
 
 export function SiteHeader() {
   return (
@@ -39,22 +40,44 @@ export function SiteHeader() {
           <Button variant="ghost" className="hidden sm:inline-flex text-base">
             0353911541
           </Button>
-          <Button variant="ghost" size="icon">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-5 w-5"
-            >
-              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-          </Button>
-          <Button variant="ghost" size="icon">
+          <AuthDialog
+            trigger={
+              <Button variant="ghost" size="icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-5 w-5"
+                >
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </Button>
+            }
+          />
+          <Link href="/cart">
+            <Button variant="ghost" size="icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-5 w-5"
+              >
+                <circle cx="8" cy="21" r="1" />
+                <circle cx="19" cy="21" r="1" />
+                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+              </svg>
+            </Button>
+          </Link>
+          {/* <Button variant="ghost" size="icon">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -69,7 +92,7 @@ export function SiteHeader() {
               <circle cx="19" cy="21" r="1" />
               <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
             </svg>
-          </Button>
+          </Button> */}
         </div>
       </div>
       <nav className="border-t w-full overflow-x-auto">
