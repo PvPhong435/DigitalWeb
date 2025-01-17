@@ -24,7 +24,8 @@ export function SiteHeader() {
               <polyline points="9 22 9 12 15 12 15 22" />
             </svg>
           </div>
-          <span className="font-bold">GocXinh Decor</span>
+          <span className="font-bold">Job 3m2
+          </span>
         </Link>
         <div className="flex flex-grow items-center justify-end gap-4">
           <form className="flex-grow max-w-md">
