@@ -10,24 +10,26 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "userid")
     private Long userID;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = true, length = 50)
     private String username;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = true, length = 255)
     private String password;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = true, length = 100)
     private String email;
 
+    @Column(name="fullname")
     private String fullName;
 
     @Column(length = 15)
@@ -35,9 +37,9 @@ public class User {
 
     private String address;
 
-    @Column(length = 10, nullable = false, columnDefinition = "varchar(10) default 'Customer'")
+    @Column(length = 10, nullable = true, columnDefinition = "varchar(10) default 'Customer'")
     private String role;
 
-    @Column(nullable = false, columnDefinition = "timestamp default current_timestamp")
+    @Column(nullable = true, columnDefinition = "timestamp default current_timestamp",name="createdat")
     private LocalDateTime createdAt;
 }

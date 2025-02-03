@@ -1,30 +1,35 @@
 package com.webdigital.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.web.bind.annotation.*;
 
 import com.webdigital.DAO.ForgotPasswordTokenRepository;
 import com.webdigital.DAO.UserRepository;
 import com.webdigital.Model.ForgotPasswordToken;
 import com.webdigital.Model.User;
+import com.webdigital.Service.EmailService;
+
+import jakarta.mail.MessagingException;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @Autowired
+	@Autowired
     private UserRepository userRepository;
+	
+	 @Autowired
+	 private EmailService emailService;
+	    
 
     @Autowired
     private ForgotPasswordTokenRepository tokenRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     // Đăng ký người dùng mới
     @PostMapping("/register")
@@ -33,7 +38,7 @@ public class AuthController {
             return ResponseEntity.badRequest().build();
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        // Không sử dụng PasswordEncoder, có thể tự mã hóa nếu cần
         user.setCreatedAt(LocalDateTime.now());
         User savedUser = userRepository.save(user);
         return ResponseEntity.ok(savedUser);
@@ -43,7 +48,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest) {
         Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
-        if (user.isPresent() && passwordEncoder.matches(loginRequest.getPassword(), user.get().getPassword())) {
+        if (user.isPresent() && user.get().getPassword().equals(loginRequest.getPassword())) { // So sánh trực tiếp
             return ResponseEntity.ok("Đăng nhập thành công");
         } else {
             return ResponseEntity.status(401).body("Email hoặc mật khẩu không đúng");
@@ -60,6 +65,7 @@ public class AuthController {
             tokenRepository.save(forgotPasswordToken);
 
             // Gửi email với mã token (mô phỏng)
+            
             return ResponseEntity.ok("Token quên mật khẩu đã được gửi: " + token);
         } else {
             return ResponseEntity.badRequest().body("Email không tồn tại trong hệ thống");
@@ -72,7 +78,7 @@ public class AuthController {
         Optional<ForgotPasswordToken> optionalToken = tokenRepository.findByToken(token);
         if (optionalToken.isPresent() && optionalToken.get().getExpiration().isAfter(LocalDateTime.now())) {
             User user = optionalToken.get().getUser();
-            user.setPassword(passwordEncoder.encode(newPassword));
+            user.setPassword(newPassword); // Không mã hóa mật khẩu
             userRepository.save(user);
 
             tokenRepository.delete(optionalToken.get());
@@ -81,13 +87,34 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Token không hợp lệ hoặc đã hết hạn");
         }
     }
+    
+    @PostMapping("/forgot-password2")
+    public ResponseEntity<String> forgotPassword2(@RequestParam String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            String token = generateRandomCode(6); // Tạo mã ngẫu nhiên 6 chữ số
+            ForgotPasswordToken forgotPasswordToken = new ForgotPasswordToken(null, user.get(), token, LocalDateTime.now().plusHours(1));
+            tokenRepository.save(forgotPasswordToken);
+
+            // Gửi email với mã token
+            String subject = "Mã xác thực quên mật khẩu";
+            String message = "Bạn đã yêu cầu thay đổi mật khẩu. Mã xác thực của bạn là: " + token;
+            try {
+                emailService.sendEmail(email, subject, message); // Gọi dịch vụ gửi email
+                return ResponseEntity.ok("Mã xác thực đã được gửi đến email của bạn.");
+            } catch (MessagingException e) {
+                return ResponseEntity.status(500).body("Lỗi khi gửi email: " + e.getMessage());
+            }
+        } else {
+            return ResponseEntity.badRequest().body("Email không tồn tại trong hệ thống");
+        }
+    }
 
     // Dữ liệu yêu cầu đăng nhập
     public static class LoginRequest {
         private String email;
         private String password;
 
-        // Getters và Setters
         public String getEmail() {
             return email;
         }
@@ -103,5 +130,14 @@ public class AuthController {
         public void setPassword(String password) {
             this.password = password;
         }
+    }
+    
+    private String generateRandomCode(int length) {
+        Random random = new Random();
+        StringBuilder code = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            code.append(random.nextInt(10)); // Tạo một số ngẫu nhiên từ 0 đến 9
+        }
+        return code.toString();
     }
 }

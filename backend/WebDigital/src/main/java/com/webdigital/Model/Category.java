@@ -19,13 +19,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Categories")
+@Table(name = "categories")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="categoryid")
     private Long categoryID;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = true, length = 50,name="categoryname")
     private String categoryName;
 
     private String description;

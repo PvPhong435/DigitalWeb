@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,32 +15,37 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "Products")
+@Table(name = "products")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="productid")
     private Long productID;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = true, length = 100,name="productname")
     private String productName;
+    
+   
 
-    @ManyToOne
-    @JoinColumn(name = "categoryID", foreignKey = @ForeignKey(name = "FK_Product_Category"))
-    private Category category;
-
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = true, precision = 10, scale = 2)
     private BigDecimal price;
 
-    @Column(nullable = false, columnDefinition = "int default 0")
+    @Column(nullable = true, columnDefinition = "int default 0")
     private Integer stock;
 
     private String description;
 
+    @Column(name="imageurl")
     private String imageURL;
 
-    @Column(nullable = false, columnDefinition = "timestamp default current_timestamp")
+    @Column(nullable = true, columnDefinition = "timestamp default current_timestamp",name="createdat")
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderDetail> orderDetails = new ArrayList<>();
+    
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "categoryid", foreignKey = @ForeignKey(name = "FK_Product_Category"))
+    private Category category;
 }

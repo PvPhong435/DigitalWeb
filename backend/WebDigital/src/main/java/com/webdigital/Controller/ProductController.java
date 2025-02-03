@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.webdigital.DAO.ProductRepository;
 import com.webdigital.Model.Product;
+import com.webdigital.Service.ProductService;
 
 @RestController
 @RequestMapping("/api/products")
@@ -17,6 +18,8 @@ public class ProductController {
 
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private ProductService productService;
 
     // Lấy danh sách tất cả sản phẩm
     @GetMapping
@@ -71,4 +74,18 @@ public class ProductController {
             return ResponseEntity.notFound().build();
         }
     }
+    
+    // lấy sản phẩm theo loại được chọn
+    @GetMapping("/category/{maLoai}")
+    public List<Product> getProductsByCategory(@PathVariable Long categoryID) {
+        return productService.getProductsByCategory(categoryID);
+    }
+    
+    //lấy 5 sản phẩm bán chạy nhất theo dạng random
+    @GetMapping("/random")
+    public List<Product> getRandomProducts() {
+        return productService.getRandomProducts();
+    }
+    
+    
 }
