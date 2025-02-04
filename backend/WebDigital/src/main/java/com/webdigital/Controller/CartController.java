@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.webdigital.DAO.CartRepository;
 import com.webdigital.DAO.ProductRepository;
+import com.webdigital.DTO.CartRequest;
+import com.webdigital.DTO.CartUpdateRequest;
 import com.webdigital.Model.*;
 import com.webdigital.Service.CartService;
 
@@ -22,9 +24,9 @@ public class CartController {
 
 	    // Thêm sản phẩm vào giỏ hàng
 	    @PostMapping("/add")
-	    public ResponseEntity<String> addToCart(@RequestParam Long userID, @RequestParam Long productID, @RequestParam int quantity) {
+	    public ResponseEntity<String> addToCart(@RequestBody CartRequest request) {
 	        try {
-	            cartService.addToCart(userID, productID, quantity);
+	            cartService.addToCart(request.getUserID(), request.getProductID(), request.getQuantity());
 	            return ResponseEntity.ok("Product added to cart successfully.");
 	        } catch (IllegalArgumentException e) {
 	            return ResponseEntity.badRequest().body(e.getMessage());
@@ -44,9 +46,10 @@ public class CartController {
 
 	    // Cập nhật số lượng sản phẩm trong giỏ hàng
 	    @PutMapping("/update/{cartID}")
-	    public ResponseEntity<String> updateCartQuantity(@PathVariable Long cartID, @RequestParam int quantity) {
+	    public ResponseEntity<String> updateCartQuantity(@PathVariable Long cartID, @RequestBody CartUpdateRequest request) {
 	        try {
-	            cartService.updateCartQuantity(cartID, quantity);
+	        	System.out.println(request.getQuantity());
+	            cartService.updateCartQuantity(cartID, request.getQuantity());
 	            return ResponseEntity.ok("Product quantity updated successfully.");
 	        } catch (IllegalArgumentException e) {
 	            return ResponseEntity.badRequest().body(e.getMessage());
@@ -65,5 +68,13 @@ public class CartController {
 	    public ResponseEntity<BigDecimal> getTotal(@PathVariable Long userID) {
 	        BigDecimal total = cartService.calculateTotal(userID);
 	        return ResponseEntity.ok(total);
+	    }
+	    
+	    //Hiển thị thông tin giỏ hàng
+	    @GetMapping("/{cartID}")
+	    public ResponseEntity<Optional<Cart>> getCartInfor(@PathVariable Long cartID)
+	    {
+	    	Optional<Cart> cartInfor=cartService.getCartInfor(cartID);
+	    	return ResponseEntity.ok(cartInfor);
 	    }
 }

@@ -25,8 +25,6 @@ public class Product {
     @Column(nullable = true, length = 100,name="productname")
     private String productName;
     
-   
-
     @Column(nullable = true, precision = 10, scale = 2)
     private BigDecimal price;
 
@@ -42,7 +40,10 @@ public class Product {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderDetail> orderDetails = new ArrayList<>();
+    private List<OrderDetail> orderDetails;
+    
+//    @ManyToMany(mappedBy = "products")
+//    private List<Cart> carts; // Liên kết ngược với Cart
     
     @JsonIgnore
     @ManyToOne

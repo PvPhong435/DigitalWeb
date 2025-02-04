@@ -1,5 +1,6 @@
 package com.webdigital.Controller;
 
+import com.webdigital.DTO.OrderStatus;
 import com.webdigital.Model.Order;
 import com.webdigital.Model.OrderDetail;
 import com.webdigital.Service.OrderService;
@@ -32,16 +33,15 @@ public class OrderController {
 
     // Tạo đơn hàng mới
     @PostMapping
-    public ResponseEntity<Order> createOrder(@RequestParam Long userID,
-                                             @RequestBody List<OrderDetail> orderDetails) {
+    public ResponseEntity<Order> createOrder(@RequestParam Long userID,@RequestBody List<OrderDetail> orderDetails) {
         Order order = orderService.createOrder(userID, orderDetails);
         return ResponseEntity.ok(order);
     }
 
     // Cập nhật trạng thái đơn hàng
     @PutMapping("/update/{orderID}")
-    public ResponseEntity<Order> updateOrderStatus(@PathVariable Long orderID, @RequestParam String status) {
-        Optional<Order> updatedOrder = orderService.updateOrderStatus(orderID, status);
+    public ResponseEntity<Order> updateOrderStatus(@PathVariable Long orderID, @RequestBody OrderStatus request) {
+        Optional<Order> updatedOrder = orderService.updateOrderStatus(orderID, request.getStatus());
         return updatedOrder.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 

@@ -24,4 +24,16 @@ public class ProductService {
     {
     	return productRepository.findById(id);
     }
+    
+    public Product createProduct(Product productAdd)
+    {
+    	
+    	return productRepository.save(productAdd);
+    }
+    
+    public Product UpdateProduct(Product productUpdate)
+    {
+    	
+    	return productRepository.save(productUpdate);
+    }
 }

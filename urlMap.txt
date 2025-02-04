@@ -46,44 +46,48 @@ http://localhost:8080/api/users/{id}
 
 3) API Giỏ hàng
 
-3.1: Lấy giỏ hàng của người dùng (GET)
-http://localhost:8080/api/cart/{userID}
+3.1: Lấy giỏ hàng của người dùng (GET) +
+http://localhost:8080/api/cart/user/{userID}
 
-3.2: Thêm sản phẩm vào giỏ hàng (POST)
+3.2: Thêm sản phẩm vào giỏ hàng (POST) +
 http://localhost:8080/api/cart/add
 
-3.3: Cập nhật số lượng sản phẩm (PUT)
+3.3: Cập nhật số lượng sản phẩm (PUT) +
 http://localhost:8080/api/cart/update
 
-3.4: Xóa sản phẩm khỏi giỏ hàng (DELETE)
+3.4: Xóa sản phẩm khỏi giỏ hàng (DELETE) +
 http://localhost:8080/api/cart/delete/{cartID}
+
+3.5: Lấy thông tin giỏ hàng (GET) +
+http://localhost:8080/api/cart/{cartID}
+VD: http://localhost:8080/api/cart/2
 
 
 4) API Đơn Hàng
 
-4.1: Lấy danh sách đơn hàng của user (GET)
+4.1: Lấy danh sách đơn hàng của user (GET) +
 http://localhost:8080/api/orders/{userID}
 
 4.2:Tạo đơn hàng mới (POST)
 http://localhost:8080/api/orders
 
-4.3: Xem chi tiết đơn hàng (GET)
+4.3: Xem chi tiết đơn hàng (GET) +
 http://localhost:8080/api/orders/details/{orderID}
 
-4.4: Cập nhật trạng thái đơn hàng (PUT)
+4.4: Cập nhật trạng thái đơn hàng (PUT) +
 http://localhost:8080/api/orders/update/{orderID}?status=CONFIRMED
 
-4.5: Xóa đơn hàng (Hủy đơn) (DELETE)
+4.5: Xóa đơn hàng (Hủy đơn) (DELETE) +
 http://localhost:8080/api/orders/{orderID}
 
 
 
 5) API Xác thực
 
-5.1: Đăng ký tài khoản (POST)
+5.1: Đăng ký tài khoản (POST) +
 http://localhost:8080/api/auth/register
 
-5.2: Đăng nhập (POST)
+5.2: Đăng nhập (POST) +
 http://localhost:8080/api/auth/login
 
 5.3: Đăng xuất (POST)

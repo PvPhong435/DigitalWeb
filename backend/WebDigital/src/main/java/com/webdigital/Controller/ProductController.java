@@ -39,10 +39,10 @@ public class ProductController {
     // Thêm sản phẩm mới
     @PostMapping
     public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-        Product savedProduct = productRepository.save(product);
+        Product savedProduct = productService.createProduct(product);
         return ResponseEntity.ok(savedProduct);
     }
-
+    
     // Cập nhật thông tin sản phẩm
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product productDetails) {

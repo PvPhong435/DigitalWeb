@@ -88,6 +88,11 @@ public class CartService {
 	    public List<Cart> getUserCart(Long userID) {
 	        return cartRepository.findByUser_UserID(userID);
 	    }
+	    
+	    public Optional<Cart> getCartInfor(Long cartID)
+	    {
+	    	return cartRepository.findById(cartID);
+	    }
 
 	    // Tính tổng tiền trong giỏ hàng
 	    public BigDecimal calculateTotal(Long userID) {
@@ -105,4 +110,6 @@ public class CartService {
 	                })
 	                .reduce(BigDecimal.ZERO, BigDecimal::add);
 	    }
+	    
+	    
 }
