@@ -1,5 +1,6 @@
 package com.webdigital.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
@@ -46,9 +47,10 @@ public class AuthController {
 
     // Đăng nhập
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<String> loginUser(@RequestBody LoginRequest loginRequest, HttpSession session) {
         Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
         if (user.isPresent() && user.get().getPassword().equals(loginRequest.getPassword())) { // So sánh trực tiếp
+        	session.setAttribute("loggedInUser", user);
             return ResponseEntity.ok("Đăng nhập thành công");
         } else {
             return ResponseEntity.status(401).body("Email hoặc mật khẩu không đúng");
@@ -110,7 +112,12 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Email không tồn tại trong hệ thống");
         }
     }
-
+    
+    @GetMapping("/logout")
+    public ResponseEntity<String> logout(HttpSession session) {
+        session.invalidate(); // Xóa session khi logout
+        return ResponseEntity.ok("Đăng xuất thành công");
+    }
     // Dữ liệu yêu cầu đăng nhập
     public static class LoginRequest {
         private String email;

@@ -2,6 +2,9 @@ package com.webdigital.Controller;
 
 import com.webdigital.Model.User;
 import com.webdigital.Service.UserService;
+
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -29,9 +32,24 @@ public class UserController {
 	        return user.map(ResponseEntity::ok)
 	                   .orElseGet(() -> ResponseEntity.notFound().build());
 	    }
+	    
+	    // Lấy thông tin người dùng đã login
+	    @GetMapping("/isLogin")
+	    public ResponseEntity<User> getUserWasLogin(HttpSession session) {
+	    	User userLogin = (User) session.getAttribute("loggedInUser");
+	    	if(userLogin!=null)
+	    	{
+	    		return ResponseEntity.ok(userLogin);
+	    	}
+	    	else
+	    	{
+	    		System.out.println("Chưa đăng nhập");
+	    		return ResponseEntity.ok(null);
+	    	}
+	    }
 
 	    // Thêm người dùng mới
-	    @PostMapping
+	    @PostMapping("/addUser")
 	    public ResponseEntity<User> createUser(@RequestBody User user) {
 	        User savedUser = userService.createUser(user);
 	        return ResponseEntity.ok(savedUser);

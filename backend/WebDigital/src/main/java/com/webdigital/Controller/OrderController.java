@@ -1,5 +1,7 @@
 package com.webdigital.Controller;
 
+import com.webdigital.DTO.OrderDTO;
+import com.webdigital.DTO.OrderRequest;
 import com.webdigital.DTO.OrderStatus;
 import com.webdigital.Model.Order;
 import com.webdigital.Model.OrderDetail;
@@ -33,8 +35,8 @@ public class OrderController {
 
     // Tạo đơn hàng mới
     @PostMapping
-    public ResponseEntity<Order> createOrder(@RequestParam Long userID,@RequestBody List<OrderDetail> orderDetails) {
-        Order order = orderService.createOrder(userID, orderDetails);
+    public ResponseEntity<Order> createOrder(@RequestBody OrderDTO orderDTO) {
+        Order order = orderService.createOrder(orderDTO);
         return ResponseEntity.ok(order);
     }
 

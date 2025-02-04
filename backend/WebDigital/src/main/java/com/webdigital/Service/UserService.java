@@ -14,51 +14,55 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class UserService {
-	 @Autowired
-	    private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-	    // Lấy danh sách tất cả người dùng
-	    public List<User> getAllUsers() {
-	        return userRepository.findAll();
-	    }
+	// Lấy danh sách tất cả người dùng
+	public List<User> getAllUsers() {
+		return userRepository.findAll();
+	}
 
-	    // Lấy thông tin người dùng theo ID
-	    public Optional<User> getUserById(Long id) {
-	        return userRepository.findById(id);
-	    }
+	// Lấy thông tin người dùng theo ID
+	public Optional<User> getUserById(Long id) {
+		return userRepository.findById(id);
+	}
 
-	    // Thêm người dùng mới
-	    public User createUser(User user) {
-	    	if (user.getUserID() != null) {
-	    	    user = userRepository.findById(user.getUserID()).orElse(user);
-	    	}
-	    	
-	    	return userRepository.save(user);
-	    }
+	// Thêm người dùng mới
+	@Transactional
+	public User createUser(User user) {
+//	    	if (user.getUserID() != null) {
+//	    	    user = userRepository.findById(user.getUserID()).orElse(user);
+//	    	}
 
-	    // Cập nhật thông tin người dùng
-	    public Optional<User> updateUser(Long id, User userDetails) {
-	        return userRepository.findById(id).map(user -> {
-	            user.setUsername(userDetails.getUsername());
-	            user.setEmail(userDetails.getEmail());
-	            user.setPassword(userDetails.getPassword());
+		if (user.getUserID() != null && userRepository.existsById(user.getUserID())) {
+			throw new IllegalArgumentException("User đã tồn tại, không thể thêm mới!");
+		}
+		//user.setUserID(null);
+		return userRepository.saveAndFlush(user);
+	}
 
-	            try {
-	                return userRepository.saveAndFlush(user); // Dùng saveAndFlush để commit ngay
-	            } catch (ObjectOptimisticLockingFailureException e) {
-	                throw new RuntimeException("Người dùng đã bị thay đổi, vui lòng thử lại!");
-	            }
-	        });
-	    }
+	// Cập nhật thông tin người dùng
+	public Optional<User> updateUser(Long id, User userDetails) {
+		return userRepository.findById(id).map(user -> {
+			user.setUsername(userDetails.getUsername());
+			user.setEmail(userDetails.getEmail());
+			user.setPassword(userDetails.getPassword());
 
-	    // Xóa người dùng theo ID
-	    public boolean deleteUser(Long id) {
-	        if (userRepository.existsById(id)) {
-	            userRepository.deleteById(id);
-	            return true;
-	        }
-	        return false;
-	    }
-	
-	
+			try {
+				return userRepository.saveAndFlush(user); // Dùng saveAndFlush để commit ngay
+			} catch (ObjectOptimisticLockingFailureException e) {
+				throw new RuntimeException("Người dùng đã bị thay đổi, vui lòng thử lại!");
+			}
+		});
+	}
+
+	// Xóa người dùng theo ID
+	public boolean deleteUser(Long id) {
+		if (userRepository.existsById(id)) {
+			userRepository.deleteById(id);
+			return true;
+		}
+		return false;
+	}
+
 }

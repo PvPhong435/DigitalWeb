@@ -1,5 +1,8 @@
 package com.webdigital.Service;
 import com.webdigital.DAO.OrderRepository;
+import com.webdigital.DAO.ProductRepository;
+import com.webdigital.DTO.OrderDTO;
+import com.webdigital.DTO.OrderDetailDTO;
 import com.webdigital.DAO.OrderDetailRepository;
 import com.webdigital.Model.Order;
 import com.webdigital.Model.OrderDetail;
@@ -9,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,31 +38,33 @@ public class OrderService {
 	        return orderRepository.findById(orderID);
 	    }
 
-	    public Order createOrder(Long userID, List<OrderDetail> orderDetails) {
-	        User user = userService.getUserById(userID).orElseThrow(() -> new RuntimeException("User not found"));
-
-	        BigDecimal totalAmount = orderDetails.stream()
-	                .map(detail -> detail.getPrice().multiply(BigDecimal.valueOf(detail.getQuantity())))
-	                .reduce(BigDecimal.ZERO, BigDecimal::add);
+	    public Order createOrder(OrderDTO orderDTO) {
+	        User user = userService.getUserById(orderDTO.getUserID())
+	            .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại!"));
 
 	        Order order = new Order();
 	        order.setUser(user);
 	        order.setOrderDate(LocalDateTime.now());
-	        order.setTotalAmount(totalAmount);
-	        order.setStatus("Pending");
 
-	        order = orderRepository.save(order);
+	        List<OrderDetail> orderDetails = new ArrayList<>();
+	        Long totalAmount=(long) 0;
+	        for (OrderDetailDTO dto : orderDTO.getOrderDetails()) {
+	            Product product = productService.getProductById(dto.getProductID())
+	                .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại!"));
 
-	        for (OrderDetail detail : orderDetails) {
-	            Product product = productService.getProductById(detail.getProduct().getProductID())
-	                    .orElseThrow(() -> new RuntimeException("Product not found"));
-
-	            detail.setOrder(order);
-	            detail.setPrice(product.getPrice());
-	            orderDetailRepository.save(detail);
+	            OrderDetail orderDetail = new OrderDetail();
+	            orderDetail.setProduct(product);
+	            orderDetail.setQuantity(dto.getQuantity());
+	            orderDetail.setPrice(product.getPrice()); // Nếu giá lấy từ sản phẩm
+	            totalAmount+=(product.getPrice().longValue()*dto.getQuantity());
+	            orderDetail.setOrder(order);
+	            orderDetails.add(orderDetail);
+	            
 	        }
-
-	        return order;
+	        BigDecimal total=BigDecimal.valueOf(totalAmount);
+	        order.setTotalAmount(total);
+	        order.setOrderDetails(orderDetails);
+	        return orderRepository.save(order);
 	    }
 
 	    public boolean deleteOrder(Long orderID) {

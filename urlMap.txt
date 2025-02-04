@@ -7,7 +7,7 @@ http://localhost:8080/api/products
 http://localhost:8080/api/products/{id}
 VD: http://localhost:8080/api/products/1
 
-1.3: Thêm sản phẩm mới (POST) + -
+1.3: Thêm sản phẩm mới (POST) + +
 http://localhost:8080/api/products
 
 1.4: Cập nhật thông tin sản phẩm (PUT) +
@@ -34,10 +34,10 @@ http://localhost:8080/api/users
 2.2: Lấy thông tin người dùng theo ID (GET) +
 http://localhost:8080/api/users/{id}
 
-2.3: Thêm người dùng mới (POST) -
-http://localhost:8080/api/users
+2.3: Thêm người dùng mới (POST) +
+http://localhost:8080/api/users/addUser
 
-2.4: Cập nhật thông tin người dùng (PUT) -
+2.4: Cập nhật thông tin người dùng (PUT) +
 http://localhost:8080/api/users/{id}
 
 2.5: Xóa người dùng (DELETE) +
@@ -68,7 +68,7 @@ VD: http://localhost:8080/api/cart/2
 4.1: Lấy danh sách đơn hàng của user (GET) +
 http://localhost:8080/api/orders/{userID}
 
-4.2:Tạo đơn hàng mới (POST)
+4.2:Tạo đơn hàng mới (POST) +
 http://localhost:8080/api/orders
 
 4.3: Xem chi tiết đơn hàng (GET) +
@@ -90,5 +90,5 @@ http://localhost:8080/api/auth/register
 5.2: Đăng nhập (POST) +
 http://localhost:8080/api/auth/login
 
-5.3: Đăng xuất (POST)
+5.3: Đăng xuất (POST) +
 http://localhost:8080/api/auth/logout
