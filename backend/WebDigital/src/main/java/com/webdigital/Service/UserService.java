@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import com.webdigital.DAO.UserRepository;
 import com.webdigital.Model.User;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class UserService {
@@ -26,7 +29,11 @@ public class UserService {
 
 	    // Thêm người dùng mới
 	    public User createUser(User user) {
-	        return userRepository.save(user);
+	    	if (user.getUserID() != null) {
+	    	    user = userRepository.findById(user.getUserID()).orElse(user);
+	    	}
+	    	
+	    	return userRepository.save(user);
 	    }
 
 	    // Cập nhật thông tin người dùng
@@ -35,7 +42,12 @@ public class UserService {
 	            user.setUsername(userDetails.getUsername());
 	            user.setEmail(userDetails.getEmail());
 	            user.setPassword(userDetails.getPassword());
-	            return userRepository.save(user);
+
+	            try {
+	                return userRepository.saveAndFlush(user); // Dùng saveAndFlush để commit ngay
+	            } catch (ObjectOptimisticLockingFailureException e) {
+	                throw new RuntimeException("Người dùng đã bị thay đổi, vui lòng thử lại!");
+	            }
 	        });
 	    }
 

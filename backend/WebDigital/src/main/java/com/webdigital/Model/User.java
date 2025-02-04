@@ -42,4 +42,5 @@ public class User {
 
     @Column(nullable = true, columnDefinition = "timestamp default current_timestamp",name="createdat")
     private LocalDateTime createdAt;
+    
 }

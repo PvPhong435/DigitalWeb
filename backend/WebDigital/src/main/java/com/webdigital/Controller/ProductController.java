@@ -76,7 +76,7 @@ public class ProductController {
     }
     
     // lấy sản phẩm theo loại được chọn
-    @GetMapping("/category/{maLoai}")
+    @GetMapping("/category/{categoryID}")
     public List<Product> getProductsByCategory(@PathVariable Long categoryID) {
         return productService.getProductsByCategory(categoryID);
     }

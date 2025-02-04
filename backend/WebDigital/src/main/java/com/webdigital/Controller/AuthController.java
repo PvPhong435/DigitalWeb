@@ -55,7 +55,7 @@ public class AuthController {
         }
     }
 
-    // Quên mật khẩu
+    // Quên mật khẩu (không sài)
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestParam String email) {
         Optional<User> user = userRepository.findByEmail(email);
@@ -88,6 +88,7 @@ public class AuthController {
         }
     }
     
+    // Quên mật khẩu (đang sài)
     @PostMapping("/forgot-password2")
     public ResponseEntity<String> forgotPassword2(@RequestParam String email) {
         Optional<User> user = userRepository.findByEmail(email);

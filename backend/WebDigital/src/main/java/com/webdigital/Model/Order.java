@@ -20,8 +20,6 @@ public class Order {
     @Column(name="orderid")
     private Long orderID;
 
-    
-
     @Column(nullable = true, columnDefinition = "timestamp default current_timestamp",name="orderdate")
     private LocalDateTime orderDate;
 

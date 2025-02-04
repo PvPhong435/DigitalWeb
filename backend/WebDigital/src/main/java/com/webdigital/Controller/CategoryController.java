@@ -15,7 +15,8 @@ import com.webdigital.Service.CategoryService;
 public class CategoryController {
 	 @Autowired
 	    private CategoryService categoryService;
-
+	 
+	 	// Lấy danh sách các loại sản phẩm
 	    @GetMapping
 	    public List<Category> getAllCategories() {
 	        return categoryService.getAllCategories();
