@@ -34,7 +34,7 @@ public class AuthController {
 
     // Đăng ký người dùng mới
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
+    public ResponseEntity<User> registerUser(@RequestBody User user,HttpSession session) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             return ResponseEntity.badRequest().build();
         }
@@ -42,6 +42,7 @@ public class AuthController {
         // Không sử dụng PasswordEncoder, có thể tự mã hóa nếu cần
         user.setCreatedAt(LocalDateTime.now());
         User savedUser = userRepository.save(user);
+        session.setAttribute("loggedInUser", user);
         return ResponseEntity.ok(savedUser);
     }
 
