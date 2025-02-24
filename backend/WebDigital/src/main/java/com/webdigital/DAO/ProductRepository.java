@@ -14,10 +14,8 @@ import jakarta.persistence.LockModeType;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	List<Product> findByCategory_CategoryID(Long categoryID);
 	
-	@Lock(LockModeType.PESSIMISTIC_WRITE)
 	@Query(value = "SELECT * FROM products WHERE productid IN (SELECT productid FROM products ORDER BY RANDOM() LIMIT 5)", nativeQuery = true)
 	List<Product> findRandomProductsOptimized();
 

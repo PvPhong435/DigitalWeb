@@ -12,7 +12,10 @@ import com.webdigital.DAO.ProductRepository;
 import com.webdigital.Model.Product;
 import com.webdigital.Service.ProductService;
 
+import jakarta.transaction.Transactional;
+
 @RestController
+@Transactional
 @RequestMapping("/api/products")
 public class ProductController {
 
