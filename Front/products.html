@@ -45,14 +45,7 @@
             <!-- Danh mục sản phẩm -->
             <div class="col-md-3 sidebar">
                 <h5><strong>DANH MỤC SẢN PHẨM</strong></h5>
-                <ul class="list-unstyled" id="categoryList">
-                    <!-- Danh mục sẽ được tải từ API -->
-                </ul>
-
-                <h5 class="mt-4"><strong>LỌC THEO GIÁ</strong></h5>
-                <input type="range" class="form-range" id="priceRange" min="500000" max="5000000">
-                <p>Giá: <span id="priceLabel">500.000 - 5.000.000đ</span></p>
-                <button class="btn btn-dark w-100">LỌC</button>
+                <ul class="list-unstyled" id="categoryList"></ul>
             </div>
 
             <!-- Danh sách sản phẩm -->
@@ -65,39 +58,29 @@
                     </select>
                 </div>
                 
-                <div class="row" id="product-list">
-                    <!-- Sản phẩm sẽ được thêm từ JavaScript -->
-                </div>
+                <div class="row" id="product-list"></div>
             </div>
         </div>
     </div>
 
     <script>
-        const BASE_URL = "http://localhost:8080"; // API chạy trên cổng 8080
-        const IMAGE_FOLDER = "img/"; // Thư mục chứa ảnh
+        const BASE_URL = "http://localhost:8080";
 
-        // 📌 Lấy categoryID từ URL
         function getCategoryID() {
             const params = new URLSearchParams(window.location.search);
-            return params.get("categoryID") || 1; // Mặc định là category 1 nếu không có
+            return params.get("categoryID") || 1;
         }
 
-        // 📌 Load danh sách danh mục
         function loadCategories() {
             fetch(`${BASE_URL}/api/category`)
                 .then(response => response.json())
                 .then(categories => {
                     const categoryList = document.getElementById("categoryList");
                     categoryList.innerHTML = "";
-
                     categories.forEach(category => {
-                        categoryList.innerHTML += `
-                            <li><a href="products.html?categoryID=${category.id}" class="${category.id == getCategoryID() ? 'fw-bold text-primary' : ''}">${category.categoryName}</a></li>
-                        `;
+                        categoryList.innerHTML += `<li><a href="products.html?categoryID=${category.categoryID}" class="${category.categoryID == getCategoryID() ? 'fw-bold text-primary' : ''}">${category.categoryName}</a></li>`;
                     });
-
-                    // Cập nhật tiêu đề breadcrumb
-                    const selectedCategory = categories.find(cat => cat.id == getCategoryID());
+                    const selectedCategory = categories.find(cat => cat.categoryID == getCategoryID());
                     if (selectedCategory) {
                         document.getElementById("categoryName").innerText = selectedCategory.categoryName;
                     }
@@ -105,30 +88,25 @@
                 .catch(error => console.error("Lỗi tải danh mục:", error));
         }
 
-        // 📌 Load sản phẩm theo danh mục
         function loadProducts() {
             const categoryID = getCategoryID();
-
             fetch(`${BASE_URL}/api/products/category/${categoryID}`)
                 .then(response => response.json())
                 .then(products => {
                     const productList = document.getElementById("product-list");
                     productList.innerHTML = "";
                     document.getElementById("productCount").innerText = products.length;
-
                     products.forEach(product => {
-                        let imageSrc = `${IMAGE_FOLDER}${product.imageURL}`;
-                        let oldPrice = product.price + 500000; // Giá cũ = giá hiện tại + 500k
-
+                        let oldPrice = product.price + 500000;
                         productList.innerHTML += `
                             <div class="col-md-4">
                                 <div class="product-item">
-                                    <img src="${imageSrc}" alt="${product.productName}" onerror="this.src='img/default.jpg'">
+                                    <img src="${product.imageURL}" alt="${product.productName}" onerror="this.src='img/default.jpg'">
                                     <h5>${product.productName}</h5>
                                     <p class="old-price">${oldPrice.toLocaleString()}đ</p>
                                     <p class="price">${product.price.toLocaleString()}đ</p>
                                     <button class="btn btn-primary w-100" onclick="addToCart(${product.productID})">MUA NGAY</button>
-                                    <p><a href="#">Add to wishlist</a></p>
+                                    <p><a href="product-detail.html?id=${product.productID}&category=${categoryID}">Xem chi tiết</a></p>
                                 </div>
                             </div>
                         `;
@@ -137,7 +115,6 @@
                 .catch(error => console.error("Lỗi tải sản phẩm:", error));
         }
 
-        // 📌 Thêm vào giỏ hàng
         function addToCart(productID) {
             fetch(`${BASE_URL}/api/cart/add`, {
                 method: "POST",
@@ -149,16 +126,10 @@
             .catch(error => console.error("Lỗi thêm vào giỏ hàng:", error));
         }
 
-        // 📌 Cập nhật giá lọc
-        document.getElementById("priceRange").addEventListener("input", function() {
-            document.getElementById("priceLabel").textContent = `500.000 - ${this.value.toLocaleString()}đ`;
-        });
-
         document.addEventListener("DOMContentLoaded", function () {
             loadCategories();
             loadProducts();
         });
     </script>
-
 </body>
 </html>
