@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,21 +9,56 @@
     <script defer src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script defer src="script.js"></script>
     <style>
-        body { background-color: #f5f5f5; }
-        .product-item { text-align: center; border: 1px solid #ddd; padding: 15px; border-radius: 10px; background: white; margin-bottom: 20px; }
-        .product-item img { width: 100%; height: auto; border-radius: 10px; }
-        .product-item h5 { font-size: 16px; margin: 10px 0; }
-        .product-item .price { font-weight: bold; color: #007bff; }
-        .product-item .old-price { text-decoration: line-through; color: gray; font-size: 14px; }
-        .sidebar { background: white; padding: 20px; border-radius: 10px; }
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .product-item {
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 10px;
+            background: white;
+            margin-bottom: 20px;
+        }
+
+        .product-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .product-item h5 {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .product-item .price {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .product-item .old-price {
+            text-decoration: line-through;
+            color: gray;
+            font-size: 14px;
+        }
+
+        .sidebar {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
     </style>
 </head>
+
 <body>
 
     <!-- Header -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="home.html"><img src="img/logo.png" width="50"> <strong>Góc Xinh Decor</strong></a>
+            <a class="navbar-brand" href="home.html"><img src="img/logo.png" width="50"> <strong>Góc Xinh
+                    Decor</strong></a>
             <div class="d-flex">
                 <input type="text" class="form-control me-2" placeholder="Tìm kiếm sản phẩm...">
                 <button class="btn btn-outline-secondary">🔍</button>
@@ -45,30 +81,35 @@
             <!-- Danh mục sản phẩm -->
             <div class="col-md-3 sidebar">
                 <h5><strong>DANH MỤC SẢN PHẨM</strong></h5>
-                <ul class="list-unstyled" id="categoryList"></ul>
+                <ul class="list-unstyled" id="categoryList">
+                    <!-- Danh mục sẽ được tải từ API -->
+                </ul>
+
+                <h5 class="mt-4"><strong>LỌC THEO GIÁ</strong></h5>
+                <input type="range" class="form-range" id="priceRange" min="500000" max="5000000">
+                <p>Giá: <span id="priceLabel">500.000 - 5.000.000đ</span></p>
+                <button class="btn btn-dark w-100">LỌC</button>
             </div>
+
 
             <!-- Danh sách sản phẩm -->
             <div class="col-md-9">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <span>Showing all <strong id="productCount">0</strong> results</span>
-                    <select class="form-select w-auto" id="sortProducts">
-                        <option value="asc">Thứ tự theo giá: thấp đến cao</option>
-                        <option value="desc">Thứ tự theo giá: cao đến thấp</option>
-                    </select>
-                </div>
-                
+                <h3 id="categoryName">Tất cả sản phẩm</h3>
+                <p>Hiển thị <span id="productCount">0</span> sản phẩm</p>
                 <div class="row" id="product-list"></div>
             </div>
         </div>
     </div>
 
     <script>
-        const BASE_URL = "http://localhost:8080";
+        const BASE_URL = "http://localhost:8080"; // API chạy trên cổng 8080
+        const IMAGE_FOLDER = "img/"; // Thư mục chứa ảnh
+
+        // 📌 Lấy categoryID từ URL
 
         function getCategoryID() {
             const params = new URLSearchParams(window.location.search);
-            return params.get("categoryID") || 1;
+            return params.get("categoryID"); // Trả về categoryID hoặc null nếu không có
         }
 
         function loadCategories() {
@@ -76,21 +117,28 @@
                 .then(response => response.json())
                 .then(categories => {
                     const categoryList = document.getElementById("categoryList");
-                    categoryList.innerHTML = "";
+                    categoryList.innerHTML = '<li><a href="products.html">Tất cả sản phẩm</a></li>'; // Thêm tùy chọn "Tất cả sản phẩm"
                     categories.forEach(category => {
-                        categoryList.innerHTML += `<li><a href="products.html?categoryID=${category.categoryID}" class="${category.categoryID == getCategoryID() ? 'fw-bold text-primary' : ''}">${category.categoryName}</a></li>`;
+                        categoryList.innerHTML += `
+                    <li>
+                        <a href="products.html?categoryID=${category.categoryID}" class="${category.categoryID == getCategoryID() ? 'fw-bold text-primary' : ''}">
+                            ${category.categoryName}
+                        </a>
+                    </li>`;
                     });
+
+                    // Cập nhật tiêu đề danh mục
                     const selectedCategory = categories.find(cat => cat.categoryID == getCategoryID());
-                    if (selectedCategory) {
-                        document.getElementById("categoryName").innerText = selectedCategory.categoryName;
-                    }
+                    document.getElementById("categoryName").innerText = selectedCategory ? selectedCategory.categoryName : "Tất cả sản phẩm";
                 })
                 .catch(error => console.error("Lỗi tải danh mục:", error));
         }
 
         function loadProducts() {
             const categoryID = getCategoryID();
-            fetch(`${BASE_URL}/api/products/category/${categoryID}`)
+            const apiUrl = categoryID ? `${BASE_URL}/api/products/category/${categoryID}` : `${BASE_URL}/api/products`;
+
+            fetch(apiUrl)
                 .then(response => response.json())
                 .then(products => {
                     const productList = document.getElementById("product-list");
@@ -99,17 +147,16 @@
                     products.forEach(product => {
                         let oldPrice = product.price + 500000;
                         productList.innerHTML += `
-                            <div class="col-md-4">
-                                <div class="product-item">
-                                    <img src="${product.imageURL}" alt="${product.productName}" onerror="this.src='img/default.jpg'">
-                                    <h5>${product.productName}</h5>
-                                    <p class="old-price">${oldPrice.toLocaleString()}đ</p>
-                                    <p class="price">${product.price.toLocaleString()}đ</p>
-                                    <button class="btn btn-primary w-100" onclick="addToCart(${product.productID})">MUA NGAY</button>
-                                    <p><a href="product-detail.html?id=${product.productID}&category=${categoryID}">Xem chi tiết</a></p>
-                                </div>
-                            </div>
-                        `;
+                    <div class="col-md-4">
+                        <div class="product-item">
+                            <img src="${product.imageURL}" alt="${product.productName}" onerror="this.src='img/default.jpg'">
+                            <h5>${product.productName}</h5>
+                            <p class="old-price">${oldPrice.toLocaleString()}đ</p>
+                            <p class="price">${product.price.toLocaleString()}đ</p>
+                            <button class="btn btn-primary w-100" onclick="addToCart(${product.productID})">MUA NGAY</button>
+                            <p><a href="product-detail.html?id=${product.productID}&category=${categoryID || ''}">Xem chi tiết</a></p>
+                        </div>
+                    </div>`;
                     });
                 })
                 .catch(error => console.error("Lỗi tải sản phẩm:", error));
@@ -121,9 +168,9 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ userID: 2, productID: productID, quantity: 1 })
             })
-            .then(response => response.json())
-            .then(data => alert("Sản phẩm đã được thêm vào giỏ hàng!"))
-            .catch(error => console.error("Lỗi thêm vào giỏ hàng:", error));
+                .then(response => response.json())
+                .then(data => alert("Sản phẩm đã được thêm vào giỏ hàng!"))
+                .catch(error => console.error("Lỗi thêm vào giỏ hàng:", error));
         }
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -131,5 +178,7 @@
             loadProducts();
         });
     </script>
+
 </body>
+
 </html>
